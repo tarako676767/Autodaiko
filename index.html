@@ -230,6 +230,27 @@
     </div>
 
     <script>
+        // 相対パス指定にすることで、RenderのURL（https://〜.onrender.com/run）へ自動で送信されます
+fetch('/run', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('サーバー応答エラー: ' + response.status);
+    }
+    return response.json();
+})
+.then(data => {
+    console.log('成功:', data);
+    alert(data.message);
+})
+.catch(error => {
+    console.error('エラー:', error);
+    alert('実行エラーが発生しました');
+});
         const menuData = {
             "menu8": { "label": "5000万コイン", "price": 0, "desc": "5000万コイン処理", "type": "coin", "btnClass": "btn-gold", "icon": "fa-sack-dollar" },
             "menu1": { "label": "1億コイン", "price": 0, "desc": "1億コイン処理", "type": "coin", "btnClass": "btn-gold", "icon": "fa-coins" },
