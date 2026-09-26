@@ -1759,3 +1759,24 @@ async def read_index():
 async def run_process(background_tasks: BackgroundTasks):
     background_tasks.add_task(main)
     return {"status": "ok", "message": "処理を開始しました"}
+    // 相対パス指定にすることで、RenderのURL（https://〜.onrender.com/run）へ自動で送信されます
+fetch('/run', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('サーバー応答エラー: ' + response.status);
+    }
+    return response.json();
+})
+.then(data => {
+    console.log('成功:', data);
+    alert(data.message);
+})
+.catch(error => {
+    console.error('エラー:', error);
+    alert('実行エラーが発生しました');
+});
