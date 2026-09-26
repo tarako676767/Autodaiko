@@ -11,6 +11,10 @@ import urllib.parse
 import asyncio
 import aiohttp
 import msgpack
+from fastapi import FastAPI, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from pathlib import Path
 from Crypto.Cipher import AES
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
@@ -1731,3 +1735,27 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# Gunicornが探す 'app' を定義
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ① 既存のHTMLファイルを返す
+@app.get("/")
+async def read_index():
+    # api2.py と同じフォルダにある index.html を読み込む
+    html_path = Path(__file__).parent / "index.html"
+    return FileResponse(html_path)
+
+# ② Webサイト（HTML）から呼び出されるAPI
+@app.post("/run")
+async def run_process(background_tasks: BackgroundTasks):
+    background_tasks.add_task(main)
+    return {"status": "ok", "message": "処理を開始しました"}
