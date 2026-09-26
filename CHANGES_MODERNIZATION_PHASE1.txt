@@ -1,0 +1,28 @@
+Tsum 現行化 Phase 1/2
+
+対象: 認証〜SecureSession〜login.nhn
+
+変更:
+- APP_VER default: 12.8.1
+- RES_VER default: 12.8.0 (envで上書き可能)
+- User-AgentのゲームバージョンをAPP_VERと同期
+- getPublicKeyレスポンスからpublic_key/kidを取得
+- 固定KEY_ID(v12.4-001)を廃止
+- 固定AES session keyを廃止
+- 固定encrypted session keyを廃止
+- 毎回32byte SecureRandomを生成
+- RSA-OAEP結果をX-Encrypted-Session-Keyへ使用
+- 動的kidをX-Key-Idへ使用
+- login処理を段階ごとのhelperへ分離
+- [1]〜[8]診断ログを追加
+- access token / refresh token / userToken / AES key / session ID本体のログ出力を停止
+- session IDの一般的な表記揺れ(session_id/sessionid/sessionId)を受ける
+
+未変更:
+- LINE Web OAuth方式
+- LINE Game SDK auth v3.8
+- HASH / DEVICE_ID / growthyinfo
+- getInfo / gameStart / gameEnd / gachaロジック
+
+注:
+この版はログイン基盤の差分切り分け用。実サーバー接続はこの環境では未検証。

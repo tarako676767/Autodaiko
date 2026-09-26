@@ -1,0 +1,43 @@
+Tsum gacha native logic v4
+==========================
+
+Based on libcocos2dcpp.so 12.8.1 SceneStore::purchaseProcedure and related request classes.
+
+Major fixes
+-----------
+1. Pickup (GachaType 21/31)
+   - Correct route: RequestPickupResult -> /pickUpResult.nhn
+   - Normal SceneStore call uses gachaid and no targetmid.
+   - maxcnt is used as a hard safety cap (e.g. 15).
+
+2. Premium BOX+ (GachaType 64)
+   - Correct standard route: gachaResult / gachaResultMulti.
+   - Current GachaBonusInfo.id from getInfo is sent as gachabonusid.
+   - type 64 uses MEDALS (type % 10 == 4), not coins.
+
+3. Payment selection
+   - Native calls CRecord::getTicketCount(7, gachaType).
+   - Single: use ticket when >=1; otherwise currency (paytype=1).
+   - Multi: use ticket when >=10; otherwise currency (paytype=1).
+   - Ticket requests use paytype=2.
+
+4. Price and currency checks
+   - GachaMast listprice/currprice are parsed.
+   - stGachaData+0xC / currprice is the actual purchase price used by SceneStore.
+   - Single cost = currprice, Multi cost = currprice * 10.
+   - GachaType % 10: 1=coin, 2=ruby, 4=medal.
+
+5. Safe loop behavior
+   - TSUM_GACHA_MAX_CALLS default 500.
+   - No blind 1000-call loop for Pickup/Premium+.
+   - Stops before API call when currency/tickets are insufficient.
+   - Stops immediately on unknown non-zero server retcode.
+   - Uses gachacompinfo.compflg=1 as completion signal and re-checks getInfo after processing.
+   - Updates current gachabonusinfo.id and balances from successful responses.
+
+6. Existing authentication/SecureSession logic was not changed.
+
+Notes
+-----
+- retcode 602 / retsubcode 2 was observed in the old Premium+ path, but its exact server-side label is not asserted here. The old request differed from native behavior by using coin assumptions and a zero/incorrect gacha bonus ID.
+- Discord 50013 Missing Permissions for LOG_CHANNEL_ID is unrelated to game API processing.

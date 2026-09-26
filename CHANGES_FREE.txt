@@ -1,0 +1,20 @@
+Tsum(1).zip からの主な変更
+
+- 全有料メニューを0円化
+- PayPay API / P2P / Proxy / config.json を完全削除
+- 売上保存・売上コマンドを削除
+- accounts.json とLINEメール/パスワード保存を削除
+- 未実装だった「BAN回避」「BAN保障」をメニューから削除
+- Discord Bot Token直書きを削除し .env 化
+- OWNER_ID / SERVER_ID / LOG_CHANNEL_ID を .env 化
+- SERVER_IDがある場合はGuildコマンド同期
+- 1人1回30万コイン無料を独立コマンド化
+- 同一ユーザーの二重実行を防止
+- ログは料金ではなく実行メニュー/成功数のみ
+- ファイルパスをプロジェクトディレクトリ基準に修正
+- ガチャ前コイン判定の境界値を修正（ちょうど1億/3000万も許可）
+- ガチャIDが取れない場合は明示エラー
+- APIレスポンス全件console出力バグを修正しTSUM_DEBUG時だけ詳細表示
+- result.jsonの保存先をapi2.pyと同じフォルダへ固定
+- Discord Token/PayPay/Proxy/LINE認証情報の平文残存をスキャン
+- bot.py / mod_stum.py / api2.py の構文・AST検査済み
